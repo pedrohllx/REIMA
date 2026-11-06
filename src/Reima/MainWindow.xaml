@@ -1,0 +1,203 @@
+<Window x:Class="Reima.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="REIMA Installer" Width="760" Height="640" MinWidth="620" MinHeight="520"
+        Background="{StaticResource Bg}" WindowStartupLocation="CenterScreen">
+    <DockPanel Margin="18">
+        <!-- Header -->
+        <StackPanel DockPanel.Dock="Top" Margin="0,0,0,10">
+            <TextBlock Style="{StaticResource H1}" Text="Realistic and Immersive Modpack for Anomaly"/>
+            <TextBlock x:Name="SubTitle" Style="{StaticResource Muted}" Text="REIMA"/>
+        </StackPanel>
+
+        <!-- Footer (credits, like Zona) -->
+        <Border DockPanel.Dock="Bottom" BorderBrush="{StaticResource Line}" BorderThickness="0,1,0,0" Padding="0,8,0,0" Margin="0,10,0,0">
+            <DockPanel>
+                <TextBlock x:Name="Footer" Style="{StaticResource Muted}" Text="REIMA Windows installer"/>
+                <TextBlock HorizontalAlignment="Right" Style="{StaticResource Muted}">
+                    <Hyperlink x:Name="LogLink" Foreground="{StaticResource Accent}" Click="OpenLog_Click">abrir log</Hyperlink>
+                </TextBlock>
+            </DockPanel>
+        </Border>
+
+        <Grid>
+            <!-- 1. Choice screen -->
+            <DockPanel x:Name="ChoiceView">
+                <!-- GAMMA update banner -->
+                <Border x:Name="GammaBanner" DockPanel.Dock="Top" Visibility="Collapsed" Background="#2B2617"
+                        BorderBrush="{StaticResource AccentDark}" BorderThickness="1" CornerRadius="3" Padding="10,8" Margin="0,0,0,8">
+                    <DockPanel>
+                        <Button DockPanel.Dock="Right" Content="Ver mudanças" Padding="10,4" Click="GammaDetails_Click"/>
+                        <TextBlock x:Name="GammaBannerText" VerticalAlignment="Center" TextWrapping="Wrap" Margin="0,0,10,0"/>
+                    </DockPanel>
+                </Border>
+                <!-- Outdated GAMMA mods banner -->
+                <Border x:Name="OutdatedBanner" DockPanel.Dock="Top" Visibility="Collapsed" Background="#2B1D1A"
+                        BorderBrush="{StaticResource Danger}" BorderThickness="1" CornerRadius="3" Padding="10,8" Margin="0,0,0,8">
+                    <DockPanel>
+                        <Button DockPanel.Dock="Right" Content="Ver e atualizar" Padding="10,4" Click="OutdatedDetails_Click"/>
+                        <TextBlock x:Name="OutdatedBannerText" VerticalAlignment="Center" TextWrapping="Wrap" Margin="0,0,10,0"/>
+                    </DockPanel>
+                </Border>
+                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+                    <Button Content="Só abrir o MO2" Margin="0,0,8,0" Click="Launch_Click"/>
+                    <Button x:Name="InstallBtn" Style="{StaticResource Primary}" Content="Instalar / Atualizar" Click="Install_Click"/>
+                </StackPanel>
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource H2}" Text="O que fazer"/>
+                        <CheckBox x:Name="BaseCheck">
+                            <StackPanel>
+                                <TextBlock Text="Baixar e configurar o jogo base (Anomaly 1.5.3 + Mod Organizer 2)"/>
+                                <TextBlock Style="{StaticResource Muted}"
+                                           Text="Anomaly pelo torrent oficial, MO2 pelo GitHub. Deixa o MO2 em modo portátil, apontado pro jogo e com o perfil pronto. O que já estiver instalado é pulado."/>
+                            </StackPanel>
+                        </CheckBox>
+                        <CheckBox x:Name="ModsCheck" IsChecked="True">
+                            <StackPanel>
+                                <TextBlock Text="Instalar / atualizar os mods do REIMA"/>
+                                <TextBlock Style="{StaticResource Muted}"
+                                           Text="Mods do ModDB abrem no seu navegador pra você clicar em baixar; o launcher pega o arquivo sozinho da pasta Downloads."/>
+                            </StackPanel>
+                        </CheckBox>
+                        <TextBlock x:Name="DetectText" Style="{StaticResource Muted}" Margin="0,6,0,0"/>
+                        <TextBlock x:Name="VersionText" Style="{StaticResource Muted}" Foreground="{StaticResource Accent}" Margin="0,2,0,0"/>
+
+                        <TextBlock Style="{StaticResource H2}" Text="Pastas"/>
+                        <TextBlock Style="{StaticResource Muted}"
+                                   Text="Escolha uma pasta de instalação e o launcher cria as duas dentro dela (Anomaly e MO2). Se o jogo ou o MO2 já estiverem instalados em outro lugar, ajuste cada caminho abaixo."/>
+                        <DockPanel Margin="0,6,0,10">
+                            <Button DockPanel.Dock="Right" Content="Escolher pasta de instalação..." Margin="6,0,0,0" Padding="10,4" Click="BrowseRoot_Click"/>
+                            <TextBlock x:Name="RootText" VerticalAlignment="Center" Foreground="{StaticResource Accent}" TextTrimming="CharacterEllipsis"/>
+                        </DockPanel>
+                        <TextBlock Style="{StaticResource Muted}" Text="Jogo (Anomaly 1.5.3) — instalado / procurado aqui"/>
+                        <DockPanel Margin="0,2,0,8">
+                            <Button DockPanel.Dock="Right" Content="..." Margin="6,0,0,0" Padding="10,4" Click="BrowseAnomaly_Click"/>
+                            <TextBox x:Name="AnomalyBox"/>
+                        </DockPanel>
+                        <TextBlock Style="{StaticResource Muted}" Text="Mod Organizer 2 — instalado / procurado aqui (os mods ficam em MO2\mods)"/>
+                        <DockPanel Margin="0,2,0,8">
+                            <Button DockPanel.Dock="Right" Content="..." Margin="6,0,0,0" Padding="10,4" Click="BrowseMo2_Click"/>
+                            <TextBox x:Name="Mo2Box"/>
+                        </DockPanel>
+                        <Expander Header="Avançado" Foreground="{StaticResource MutedBrush}" Margin="0,4,0,0">
+                            <StackPanel Margin="0,6,0,0">
+                                <TextBlock Style="{StaticResource Muted}" Text="Perfil do MO2 para copiar quando o perfil REIMA ainda não existe (opcional; deixe vazio numa instalação nova)"/>
+                                <TextBox x:Name="BaseProfileBox" Margin="0,2,0,8"/>
+                                <TextBlock Style="{StaticResource Muted}" Text="Pasta com arquivos já baixados (ex.: a pasta downloads do GAMMA antigo). Arquivos achados aqui não são baixados de novo."/>
+                                <DockPanel Margin="0,2,0,0">
+                                    <Button DockPanel.Dock="Right" Content="..." Margin="6,0,0,0" Padding="10,4" Click="BrowseCache_Click"/>
+                                    <TextBox x:Name="CacheBox"/>
+                                </DockPanel>
+                                <CheckBox x:Name="UsePacksCheck" Margin="0,10,0,0" Foreground="{StaticResource Fg}" IsChecked="True"
+                                          Content="Importar mods dos pacotes ROMEO / GeorgePack que eu já tenho (em vez do Drive)"/>
+                                <TextBlock Style="{StaticResource Muted}" TextWrapping="Wrap" Margin="22,2,0,2"
+                                           Text="Pasta onde estão os arquivos dos pacotes (também procuro na sua pasta Downloads). Mod que não estiver no pacote vem do Drive."/>
+                                <DockPanel Margin="22,2,0,0">
+                                    <Button DockPanel.Dock="Right" Content="..." Margin="6,0,0,0" Padding="10,4" Click="BrowsePacks_Click"/>
+                                    <TextBox x:Name="PackDirBox"/>
+                                </DockPanel>
+                                <CheckBox x:Name="PreferModDbCheck" Margin="0,10,0,0" Foreground="{StaticResource Fg}"
+                                          Content="Baixar os mods do GAMMA pelo ModDB (fila no navegador) em vez do Drive"/>
+                                <TextBlock Style="{StaticResource Muted}" TextWrapping="Wrap" Margin="22,2,0,0"
+                                           Text="Antes de instalar, o REIMA abre a página de cada mod que falta, um depois do outro: é só clicar em baixar. O arquivo é conferido pelo MD5 do GAMMA. Depois disso a instalação segue sozinha."/>
+                            </StackPanel>
+                        </Expander>
+                        <StackPanel x:Name="OptionsHost"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </DockPanel>
+
+            <!-- 2. Progress screen -->
+            <DockPanel x:Name="ProgressView" Visibility="Collapsed">
+                <StackPanel DockPanel.Dock="Top">
+                    <TextBlock x:Name="StepTitle" Style="{StaticResource H2}" Text="Preparando..."/>
+                    <TextBlock x:Name="StepDetail" Style="{StaticResource Muted}" Text=""/>
+                    <ProgressBar x:Name="CurrentBar" Margin="0,8,0,4"/>
+                    <TextBlock Style="{StaticResource Muted}" Text="Total"/>
+                    <ProgressBar x:Name="OverallBar" Margin="0,4,0,10"/>
+                </StackPanel>
+                <Button DockPanel.Dock="Bottom" x:Name="CancelBtn" HorizontalAlignment="Right" Content="Cancelar" Margin="0,10,0,0" Click="Cancel_Click"/>
+                <Border Background="#141414" BorderBrush="{StaticResource Line}" BorderThickness="1">
+                    <ListBox x:Name="LogList" Background="Transparent" BorderThickness="0" Foreground="{StaticResource MutedBrush}"
+                             FontFamily="Consolas" FontSize="12"/>
+                </Border>
+            </DockPanel>
+
+            <!-- 3. Manual files screen -->
+            <DockPanel x:Name="MissingView" Visibility="Collapsed">
+                <StackPanel DockPanel.Dock="Top">
+                    <TextBlock Style="{StaticResource H2}" Text="Arquivos que precisam ser baixados manualmente"/>
+                    <TextBlock Style="{StaticResource Muted}"
+                               Text="Esses arquivos não têm link público (ex.: Discord). Baixe cada um e coloque na pasta downloads do launcher com o nome exato mostrado."/>
+                </StackPanel>
+                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+                    <Button Content="Voltar" Margin="0,0,8,0" Click="Back_Click"/>
+                    <Button Content="Abrir pasta downloads" Margin="0,0,8,0" Click="OpenDownloads_Click"/>
+                    <Button Style="{StaticResource Primary}" Content="Verificar de novo" Click="Install_Click"/>
+                </StackPanel>
+                <ScrollViewer Margin="0,10,0,0" VerticalScrollBarVisibility="Auto">
+                    <ItemsControl x:Name="MissingList">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="{StaticResource Panel}" BorderBrush="{StaticResource Line}" BorderThickness="1"
+                                        CornerRadius="3" Padding="10" Margin="0,0,0,6">
+                                    <StackPanel>
+                                        <TextBlock FontWeight="SemiBold" Text="{Binding Name}"/>
+                                        <TextBlock Style="{StaticResource Muted}" Text="{Binding File, StringFormat=Arquivo: {0}}"/>
+                                        <TextBlock Style="{StaticResource Muted}" Text="{Binding ManualHint, StringFormat=Onde: {0}}"/>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </DockPanel>
+
+            <!-- 5. GAMMA update details -->
+            <DockPanel x:Name="GammaView" Visibility="Collapsed">
+                <StackPanel DockPanel.Dock="Top">
+                    <TextBlock Style="{StaticResource H2}" Text="Atualização do GAMMA oficial"/>
+                    <TextBlock x:Name="GammaHeader" Style="{StaticResource Muted}"/>
+                </StackPanel>
+                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+                    <Button Content="Voltar" Margin="0,0,8,0" Click="Back_Click"/>
+                    <Button Content="Ignorar esta versão" Margin="0,0,8,0" Click="GammaIgnore_Click"/>
+                    <Button x:Name="GammaApplyBtn" Style="{StaticResource Primary}" Content="Atualizar a receita do REIMA" Click="GammaApply_Click"/>
+                </StackPanel>
+                <Border Margin="0,10,0,0" Background="#141414" BorderBrush="{StaticResource Line}" BorderThickness="1">
+                    <ListBox x:Name="GammaList" Background="Transparent" BorderThickness="0" Foreground="{StaticResource Fg}" FontSize="12"/>
+                </Border>
+            </DockPanel>
+
+            <!-- 6. Outdated mods: update + Drive links -->
+            <DockPanel x:Name="OutdatedView" Visibility="Collapsed">
+                <StackPanel DockPanel.Dock="Top">
+                    <TextBlock Style="{StaticResource H2}" Text="Mods do GAMMA desatualizados"/>
+                    <TextBlock Style="{StaticResource Muted}"
+                               Text="Comparado com a lista oficial do GAMMA no GitHub. &quot;Atualizar&quot; abre a página no seu navegador: baixe, e o REIMA guarda o arquivo na pasta &quot;Subir pro Drive&quot; e atualiza a receita. Depois de subir, cole o link do Drive e salve."/>
+                    <TextBlock x:Name="OutdatedStatus" Style="{StaticResource Muted}" Foreground="{StaticResource Accent}" Margin="0,6,0,0"/>
+                </StackPanel>
+                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+                    <Button Content="Voltar" Margin="0,0,8,0" Click="Back_Click"/>
+                    <Button Content="Abrir pasta &quot;Subir pro Drive&quot;" Margin="0,0,8,0" Click="OpenUpload_Click"/>
+                    <Button Content="Checar de novo" Click="RecheckOutdated_Click"/>
+                </StackPanel>
+                <ScrollViewer Margin="0,10,0,0" VerticalScrollBarVisibility="Auto">
+                    <StackPanel x:Name="OutdatedList"/>
+                </ScrollViewer>
+            </DockPanel>
+
+            <!-- 4. Finish screen -->
+            <StackPanel x:Name="FinishView" Visibility="Collapsed" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <TextBlock x:Name="FinishTitle" Style="{StaticResource H1}" HorizontalAlignment="Center" Text="Pronto para jogar"/>
+                <TextBlock x:Name="FinishDetail" Style="{StaticResource Muted}" HorizontalAlignment="Center" TextAlignment="Center"
+                           Margin="0,6,0,16" MaxWidth="520"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Content="Voltar" Margin="0,0,8,0" Click="Back_Click"/>
+                    <Button Style="{StaticResource Primary}" Content="Abrir Mod Organizer 2" Click="Launch_Click"/>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+    </DockPanel>
+</Window>

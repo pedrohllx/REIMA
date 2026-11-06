@@ -1,0 +1,9 @@
+bin/
+obj/
+.vs/
+*.user
+downloads/
+logs/
+*.bak
+*.prepack
+src/Reima/tools/rclone.exe

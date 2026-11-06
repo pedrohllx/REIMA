@@ -1,0 +1,135 @@
+// REIMA - receita do modpack. A ordem dos assets = ordem no MO2 (o primeiro fica com a MAIOR prioridade).
+// url vazio = arquivo manual: coloque o arquivo na pasta "downloads" do launcher.
+// Links do Google Drive no formato "https://drive.google.com/file/d/<ID>/view" funcionam direto.
+{
+  "name": "Realistic and Immersive Modpack for Anomaly",
+  "version": "0.1.0",
+  "profile": "REIMA",
+  "manifestUrl": "https://drive.usercontent.google.com/download?id=1PiXq7VLdo6AMgx0vbd1ekEKzQUZjmG0s&export=download&confirm=t",
+  "base": {
+    "anomaly": {
+      "url": "magnet:?xt=urn:btih:205676f90498f2be3900a3eb0d29b9f50a591fa1&dn=Anomaly-1.5.3-Full.7z&tr=udp://bt2.archive.org:6969/announce&tr=udp://tracker.opentrackr.org:1337/announce&tr=udp://bt1.archive.org:6969/announce&tr=udp://tracker.torrent.eu.org:451/announce",
+      "file": "Anomaly-1.5.3-Full.7z",
+      "sha256": "e564d9110e673eacfa5604b0837f6e6208eae4cd46cd5682326ed59f931527ae",
+      "page": "https://www.moddb.com/mods/stalker-anomaly/downloads/stalker-anomaly-153"
+    },
+    "mo2": {
+      "url": "https://github.com/ModOrganizer2/modorganizer/releases/download/v2.5.2/Mod.Organizer-2.5.2.7z",
+      "file": "Mod.Organizer-2.5.2.7z",
+      "sha256": "e6376efd87fd5ddd95aee959405e8f067afa526ea6c2c0c5aa03c5108bf4a815",
+      "page": "https://github.com/ModOrganizer2/modorganizer/releases/tag/v2.5.2"
+    }
+  },
+  "optionGroups": [
+    {
+      "id": "upscaler",
+      "label": "Upscaler",
+      "exclusive": true,
+      "options": [
+        {
+          "id": "original",
+          "label": "Original (sem OptiScaler)",
+          "description": "Jogo como vem, sem DLL extra na pasta bin. Mais estável.",
+          "default": true
+        },
+        {
+          "id": "optiscaler",
+          "label": "OptiScaler + DLSS (experimental)",
+          "description": "OptiScaler (fork DLSSNR) com DLSS/XeSS/FSR no DX11. Menu no jogo: Insert. Exige modo borderless."
+        }
+      ]
+    },
+    {
+      "id": "config",
+      "label": "Configurações",
+      "exclusive": false,
+      "options": [
+        {
+          "id": "config",
+          "label": "Minhas configurações e saves",
+          "default": true,
+          "description": "Gráficos, teclas, MCM, presets, saves e -dbg do jeito que estavam quando foram salvos. Só é aplicado quando muda."
+        }
+      ]
+    }
+  ],
+  "assets": [
+    {
+      "id": "modded_exes",
+      "name": "Anomaly modded exes (MT - Grass Instancing)",
+      "kind": "anomaly",
+      "target": "",
+      "url": "https://drive.usercontent.google.com/download?id=1uZ1l2zFjafZfm3c2oS17PTeRF7RTgixt&export=download&confirm=t",
+      "file": "SSS24_MT_GrassInstancing_exes.7z",
+      "sha256": "6F7FA5DB526AB1D62CBDC5279517FFDC8D99DD68EF542A38C6D3586BCB458F97"
+    },
+    {
+      "id": "optiscaler_bin",
+      "name": "OptiScaler (DLSSNR fork) + DLSS/XeSS/FSR DLLs",
+      "kind": "anomaly",
+      "target": "bin",
+      "url": "https://drive.usercontent.google.com/download?id=1SUoglCm4VyAwVmvED7DmhQ7jAvweracB&export=download&confirm=t",
+      "file": "OptiScaler_DLSSNR_bin.7z",
+      "sha256": "243695A9BB5406B8D1DA3EDBE5BF36661295575E616CC22A3520A218154D6607",
+      "requires": [
+        "optiscaler"
+      ],
+      "removeWhenOff": true
+    },
+    {
+      "id": "romeo_repos",
+      "name": "Romeo Repositions V1 - Broski (+ Extended all weapons)",
+      "separator": "REIMA - Weapons",
+      "url": "",
+      "manualHint": "Pacote REIMA no seu Drive",
+      "file": "reima_romeo_repositions.7z"
+    },
+    {
+      "id": "sss24",
+      "name": "[GP] Screen Space Shaders 24 RC5",
+      "separator": "REIMA - Graphics",
+      "url": "",
+      "manualHint": "Discord SSS (beta testers)",
+      "file": "SSS24_RC5.7z"
+    },
+    {
+      "id": "otfa",
+      "name": "On The Fly Attachments v0.6.6",
+      "separator": "REIMA - Gameplay",
+      "url": "",
+      "file": "On_The_Fly_Attachments_v0.6.6.zip"
+    },
+    {
+      "id": "config_anomaly",
+      "name": "Minhas configurações e saves (appdata, MCM, -dbg)",
+      "requires": [
+        "config"
+      ],
+      "kind": "anomaly",
+      "target": "",
+      "file": "REIMA_Config_anomaly.7z",
+      "sha256": "8D163E1E35474CD9334EC7AF9AE1786A90EC899D5B28BBF773BD9C6F0BD82F62",
+      "url": "https://drive.usercontent.google.com/download?id=1XQ39KPTXsG34BVD_ZiPYAi6P5vlaANOe&export=download&confirm=t"
+    },
+    {
+      "id": "config_overwrite",
+      "name": "Minhas configurações de mods (MO2 overwrite)",
+      "requires": [
+        "config"
+      ],
+      "kind": "mo2",
+      "target": "overwrite",
+      "file": "REIMA_Config_overwrite.7z",
+      "sha256": "AED7E68944EDA21688E3C7F69256E1D96597A89424DDC55A044DC76048E48A4B",
+      "url": "https://drive.usercontent.google.com/download?id=1BPN7aG0D82vl-2-iY_6kbnfmhDy9YcXB&export=download&confirm=t"
+    }
+  ],
+  "configPatches": [
+    {
+      "file": "appdata/user.ltx",
+      "set": {
+        "rs_screenmode": "borderless"
+      }
+    }
+  ]
+}

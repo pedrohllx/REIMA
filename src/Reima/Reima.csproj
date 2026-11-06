@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <LangVersion>latest</LangVersion>
+    <AssemblyName>REIMA</AssemblyName>
+    <RootNamespace>Reima</RootNamespace>
+    <Product>Realistic and Immersive Modpack for Anomaly</Product>
+    <Version>0.1.0</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Update="manifest.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="tools\**" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

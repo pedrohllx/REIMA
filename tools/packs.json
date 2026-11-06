@@ -1,0 +1,133 @@
+{
+  "sourcePacks": [
+    {
+      "id": "romeo",
+      "name": "CLIKRΔD - ROMEO (2026.10.12 + hotfixes 10.12/10.14)",
+      "hint": "Discord CLIKRΔD, canal do ROMEO",
+      "files": [
+        "CLIKRΔD - ROMEO-2026.10.12-001.7z",
+        "CLIKRΔD - ROMEO-2026.10.12-hf.7z",
+        "CLIKRΔD - ROMEO-2026.10.14-hf.7z",
+        "CLIKRΔD - ROMEO-2026.10.14-hf1.7z"
+      ]
+    },
+    {
+      "id": "georgepack",
+      "name": "GeorgePack 1-001",
+      "hint": "Repack GeorgePack (arquivo GeorgePack 1-001.1)",
+      "files": [
+        "GeorgePack 1-001.1"
+      ]
+    }
+  ],
+  "listings": [
+    {
+      "pack": "georgepack",
+      "archive": "GeorgePack 1-001.1",
+      "inner": "Gamma dist\\data\\core.7z",
+      "slt": "D:/REIMA_upload/packlists/slt_gp_core.txt",
+      "modsPrefix": "GAMMA\\mods"
+    },
+    {
+      "pack": "georgepack",
+      "archive": "GeorgePack 1-001.1",
+      "inner": "Gamma dist\\data\\extras.7z",
+      "slt": "D:/REIMA_upload/packlists/slt_gp_extras.txt",
+      "modsPrefix": ""
+    },
+    {
+      "pack": "georgepack",
+      "archive": "GeorgePack 1-001.1",
+      "inner": "Gamma dist\\data\\mods01.7z",
+      "slt": "D:/REIMA_upload/packlists/slt_gp_mods01.txt",
+      "modsPrefix": ""
+    },
+    {
+      "pack": "georgepack",
+      "archive": "GeorgePack 1-001.1",
+      "inner": "Gamma dist\\data\\mods02.7z",
+      "slt": "D:/REIMA_upload/packlists/slt_gp_mods02.txt",
+      "modsPrefix": ""
+    },
+    {
+      "pack": "georgepack",
+      "archive": "GeorgePack 1-001.1",
+      "inner": "Gamma dist\\data\\mods03.7z",
+      "slt": "D:/REIMA_upload/packlists/slt_gp_mods03.txt",
+      "modsPrefix": ""
+    },
+    {
+      "pack": "georgepack",
+      "archive": "GeorgePack 1-001.1",
+      "inner": "Gamma dist\\data\\mods04.7z",
+      "slt": "D:/REIMA_upload/packlists/slt_gp_mods04.txt",
+      "modsPrefix": ""
+    },
+    {
+      "pack": "georgepack",
+      "archive": "GeorgePack 1-001.1",
+      "inner": "Gamma dist\\data\\mods05.7z",
+      "slt": "D:/REIMA_upload/packlists/slt_gp_mods05.txt",
+      "modsPrefix": ""
+    },
+    {
+      "pack": "georgepack",
+      "archive": "GeorgePack 1-001.1",
+      "inner": "Gamma dist\\data\\mods06.7z",
+      "slt": "D:/REIMA_upload/packlists/slt_gp_mods06.txt",
+      "modsPrefix": ""
+    },
+    {
+      "pack": "georgepack",
+      "archive": "GeorgePack 1-001.1",
+      "inner": "Gamma dist\\data\\mods07.7z",
+      "slt": "D:/REIMA_upload/packlists/slt_gp_mods07.txt",
+      "modsPrefix": ""
+    },
+    {
+      "pack": "georgepack",
+      "archive": "GeorgePack 1-001.1",
+      "inner": "Gamma dist\\data\\mods08.7z",
+      "slt": "D:/REIMA_upload/packlists/slt_gp_mods08.txt",
+      "modsPrefix": ""
+    },
+    {
+      "pack": "georgepack",
+      "archive": "GeorgePack 1-001.1",
+      "inner": "Gamma dist\\data\\mods09.7z",
+      "slt": "D:/REIMA_upload/packlists/slt_gp_mods09.txt",
+      "modsPrefix": ""
+    },
+    {
+      "pack": "georgepack",
+      "archive": "GeorgePack 1-001.1",
+      "inner": "Gamma dist\\data\\mods10.7z",
+      "slt": "D:/REIMA_upload/packlists/slt_gp_mods10.txt",
+      "modsPrefix": ""
+    },
+    {
+      "pack": "romeo",
+      "archive": "CLIKRΔD - ROMEO-2026.10.12-001.7z",
+      "slt": "D:/REIMA_upload/packlists/slt_CLIKRΔD - ROMEO-2026.10.12-001.7z.txt",
+      "modsPrefix": "CLIKRΔD - ROMEO\\GAMMA\\mods"
+    },
+    {
+      "pack": "romeo",
+      "archive": "CLIKRΔD - ROMEO-2026.10.12-hf.7z",
+      "slt": "D:/REIMA_upload/packlists/slt_CLIKRΔD - ROMEO-2026.10.12-hf.7z.txt",
+      "modsPrefix": "CLIKRΔD - ROMEO-2026.10.12-hf\\GAMMA\\mods"
+    },
+    {
+      "pack": "romeo",
+      "archive": "CLIKRΔD - ROMEO-2026.10.14-hf.7z",
+      "slt": "D:/REIMA_upload/packlists/slt_CLIKRΔD - ROMEO-2026.10.14-hf.7z.txt",
+      "modsPrefix": "CLIKRΔD - ROMEO-2026.10.14-hf\\GAMMA\\mods"
+    },
+    {
+      "pack": "romeo",
+      "archive": "CLIKRΔD - ROMEO-2026.10.14-hf1.7z",
+      "slt": "D:/REIMA_upload/packlists/slt_CLIKRΔD - ROMEO-2026.10.14-hf1.7z.txt",
+      "modsPrefix": "CLIKRΔD - ROMEO-2026.10.14-hf1\\GAMMA\\mods"
+    }
+  ]
+}
