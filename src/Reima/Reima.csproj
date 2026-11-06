@@ -14,8 +14,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Update="manifest.json" CopyToOutputDirectory="PreserveNewest" />
-    <None Update="tools\**" CopyToOutputDirectory="PreserveNewest" />
+    <!-- loose files next to REIMA.exe (single-file publish must not swallow them: the launcher runs aria2c from disk) -->
+    <None Update="manifest.json" CopyToOutputDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
+    <None Update="tools\**" CopyToOutputDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
+    <!-- rclone is a maintainer tool (uploads to the Drive), not shipped to players -->
+    <None Update="tools\rclone.exe" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="Never" />
   </ItemGroup>
 
 </Project>
