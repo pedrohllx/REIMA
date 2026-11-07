@@ -10,7 +10,7 @@
     <AssemblyName>REIMA</AssemblyName>
     <RootNamespace>Reima</RootNamespace>
     <Product>Realistic and Immersive Modpack for Anomaly</Product>
-    <Version>0.1.3</Version>
+    <Version>0.1.4</Version>
   </PropertyGroup>
 
   <ItemGroup>
