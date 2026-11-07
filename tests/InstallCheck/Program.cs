@@ -10,7 +10,7 @@ pick.Add(full.Assets.First(a => a.PackFrom is not null && a.Name.StartsWith("On 
 pick.Add(full.Assets.First(a => a.PackFrom is not null && a.FromPack is not null));                            // Drive pack (packs off)
 pick.AddRange(full.Assets.Where(a => a.Md5 is not null && a.ArchiveFolders.Count > 0).Take(2));                // GAMMA archives (Drive copy)
 pick.Add(full.Assets.First(a => a.Url?.Contains("github.com") == true));
-pick.AddRange(full.Assets.Where(a => a.Name.Contains("Immaculate Munitions")));               // read-only folders in the archive                                        // GitHub
+pick.AddRange(full.Assets.Where(a => a.Name.Contains("Immaculate Munitions") || a.Name.Contains("SVT-40")));               // read-only folders in the archive                                        // GitHub
 var m = full with { Assets = pick, ConfigPatches = [], OptionGroups = [] };
 var root = args[1];
 if (Directory.Exists(root)) Directory.Delete(root, true);

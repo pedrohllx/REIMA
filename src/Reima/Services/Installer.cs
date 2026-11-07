@@ -42,6 +42,9 @@ public sealed class Installer(Manifest manifest, InstallSettings s, Downloader d
 
     public GitHubSource? GitHub { get; init; }
 
+    bool _hooked;
+    void HookDownloader() { if (_hooked) return; _hooked = true; downloader.Retrying += m => Log?.Invoke(m); }
+
     PackImporter? _packs;
     PackImporter Packs => _packs ??= CreatePacks();
     PackImporter CreatePacks() { var p = new PackImporter(manifest, s, extractor); p.Log += m => Log?.Invoke(m); return p; }
@@ -132,6 +135,7 @@ public sealed class Installer(Manifest manifest, InstallSettings s, Downloader d
         var missing = FindMissingManual();
         if (missing.Count > 0) throw new MissingFilesException(missing);
 
+        HookDownloader();
         var state = LoadState();
         RemoveDeselected(state);
         await QueueAssistedAsync(progress, state, ct);
@@ -201,9 +205,19 @@ public sealed class Installer(Manifest manifest, InstallSettings s, Downloader d
             else if (!File.Exists(file))
             {
                 Log?.Invoke($"Baixando {a.Name}{(plan.Url != a.Url ? " (versão mais nova do GitHub)" : "")}");
-                await downloader.DownloadAsync(plan.Url!, file, new Progress<TransferProgress>(p =>
-                    Report($"Baixando {Fmt(p.Done)}{(p.Total is long t ? " / " + Fmt(t) : "")}  {Fmt((long)p.BytesPerSecond)}/s",
-                           p.Total is long t2 && t2 > 0 ? 0.6 * p.Done / t2 : null)), ct);
+                try
+                {
+                    await downloader.DownloadAsync(plan.Url!, file, new Progress<TransferProgress>(p =>
+                        Report($"Baixando {Fmt(p.Done)}{(p.Total is long t ? " / " + Fmt(t) : "")}  {Fmt((long)p.BytesPerSecond)}/s",
+                               p.Total is long t2 && t2 > 0 ? 0.6 * p.Done / t2 : null)), ct);
+                }
+                catch (DriveQuotaException) when (AssistedDownload.Needs(a.Source) && !string.IsNullOrWhiteSpace(a.Md5))
+                {
+                    // Drive copy locked for the day: same original file from ModDB, user clicks download in the browser (md5-checked)
+                    Log?.Invoke($"Drive bloqueou {a.Name} por cota; abrindo a página do ModDB no navegador...");
+                    file = await new AssistedDownload(s.DownloadsDir).WaitAsync(a with { Url = a.Source }, progress, baseFrac, ct);
+                    plan = plan with { PinnedChecksums = true };
+                }
             }
 
             // Validate the download IS the version the recipe says (Drive: sha256, ModDB: md5).
@@ -240,7 +254,7 @@ public sealed class Installer(Manifest manifest, InstallSettings s, Downloader d
                     else
                         foreach (var sub in plan.Folders) // GAMMA instructions: merge these folders in order
                         {
-                            var srcSub = FindSub(tmp, sub)
+                            var srcSub = (sub.Trim() == "0" ? root : FindSub(tmp, sub)) // GAMMA: "0" = archive root
                                 ?? throw new DirectoryNotFoundException($"Pasta \"{sub}\" não existe dentro de {plan.File}.");
                             CopyDir(srcSub, dest);
                         }

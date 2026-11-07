@@ -7,6 +7,10 @@ using System.Text.RegularExpressions;
 
 namespace Reima.Services;
 
+
+/// <summary>Google Drive refuses the file for a while (too many downloads in 24 h). Retrying minutes later does not help.</summary>
+public sealed class DriveQuotaException() : InvalidOperationException(
+    "O Google Drive bloqueou este arquivo por excesso de downloads nas últimas horas (cota). Ele volta a baixar em até 24 h.");
 public readonly record struct TransferProgress(long Done, long? Total, double BytesPerSecond);
 
 /// <summary>Resumable HTTP downloads with Google Drive link handling and SHA-256 verification.</summary>
@@ -34,7 +38,28 @@ public sealed partial class Downloader(HttpClient http)
         return new Uri(new Uri("https://www.moddb.com"), WebUtility.HtmlDecode(m.Groups[1].Value));
     }
 
+    /// <summary>
+    /// Download with retries: Google Drive sometimes answers a burst of downloads with a short-lived HTML page
+    /// (rate limit / scan notice) instead of the file, and connections drop. Waits and resumes (.part) instead of failing.
+    /// </summary>
     public async Task DownloadAsync(string url, string dest, IProgress<TransferProgress>? progress, CancellationToken ct)
+    {
+        int[] waitSeconds = [15, 45, 120, 300];
+        for (int attempt = 0; ; attempt++)
+        {
+            try { await DownloadOnceAsync(url, dest, progress, ct); return; }
+            catch (Exception ex) when (attempt < waitSeconds.Length && !ct.IsCancellationRequested &&
+                                       ex is not DriveQuotaException && ex is InvalidOperationException or HttpRequestException or IOException or TaskCanceledException)
+            {
+                Retrying?.Invoke($"{Path.GetFileName(dest)}: {ex.Message.Split('.')[0]}. Tentando de novo em {waitSeconds[attempt]}s ({attempt + 1}/{waitSeconds.Length})...");
+                await Task.Delay(TimeSpan.FromSeconds(waitSeconds[attempt]), ct);
+            }
+        }
+    }
+
+    public event Action<string>? Retrying;
+
+    async Task DownloadOnceAsync(string url, string dest, IProgress<TransferProgress>? progress, CancellationToken ct)
     {
         Directory.CreateDirectory(Path.GetDirectoryName(dest)!);
         var part = dest + ".part";
@@ -51,6 +76,12 @@ public sealed partial class Downloader(HttpClient http)
         }
         resp.EnsureSuccessStatusCode();
 
+        if (resp.Content.Headers.ContentType?.MediaType == "text/html")
+        {
+            var html = await resp.Content.ReadAsStringAsync(ct);
+            if (html.Contains("Quota exceeded", StringComparison.OrdinalIgnoreCase) || html.Contains("Too many users", StringComparison.OrdinalIgnoreCase))
+                throw new DriveQuotaException();
+        }
         if (resp.Content.Headers.ContentType?.MediaType == "text/html")
             throw new InvalidOperationException(
                 "O servidor devolveu uma página em vez do arquivo. Se for Google Drive, confira se o link está como " +
