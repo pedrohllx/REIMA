@@ -81,6 +81,6 @@ public sealed class PackImporter(Manifest manifest, InstallSettings s, Extractor
 
     public void Cleanup()
     {
-        try { if (Directory.Exists(StageDir)) Directory.Delete(StageDir, true); } catch { }
+        try { if (Directory.Exists(StageDir)) Fs.DeleteDir(StageDir); } catch { }
     }
 }

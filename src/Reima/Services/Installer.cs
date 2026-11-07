@@ -173,7 +173,7 @@ public sealed class Installer(Manifest manifest, InstallSettings s, Downloader d
             {
                 Report("Instalando (do pacote)", 0.9);
                 var pdest = Path.Combine(s.Mo2Root, "mods", a.ModFolder);
-                if (Directory.Exists(pdest)) Directory.Delete(pdest, true);
+                if (Directory.Exists(pdest)) Fs.DeleteDir(pdest);
                 MoveDir(stagedDir, pdest);
                 if (!File.Exists(Path.Combine(pdest, "meta.ini")))
                     File.WriteAllText(Path.Combine(pdest, "meta.ini"),
@@ -226,7 +226,7 @@ public sealed class Installer(Manifest manifest, InstallSettings s, Downloader d
             }
 
             var tmp = Path.Combine(s.DownloadsDir, ".extract", a.Id);
-            if (Directory.Exists(tmp)) Directory.Delete(tmp, true);
+            if (Directory.Exists(tmp)) Fs.DeleteDir(tmp);
             await extractor.ExtractAsync(file, tmp, new Progress<int>(p => Report($"Extraindo {p}%", 0.65 + 0.3 * p / 100.0)), ct);
             var root = ResolveRoot(tmp, a);
 
@@ -235,7 +235,7 @@ public sealed class Installer(Manifest manifest, InstallSettings s, Downloader d
             {
                 case AssetKind.Mod:
                     var dest = Path.Combine(s.Mo2Root, "mods", a.ModFolder);
-                    if (Directory.Exists(dest)) Directory.Delete(dest, true);
+                    if (Directory.Exists(dest)) Fs.DeleteDir(dest);
                     if (plan.Folders.Count == 0) MoveDir(root, dest);
                     else
                         foreach (var sub in plan.Folders) // GAMMA instructions: merge these folders in order
@@ -260,7 +260,7 @@ public sealed class Installer(Manifest manifest, InstallSettings s, Downloader d
                     OverlayWithBackup(root, Path.Combine(s.Mo2Root, a.Target ?? ""), Path.Combine(backupDir, "MO2", a.Target ?? ""));
                     break;
             }
-            if (Directory.Exists(tmp)) Directory.Delete(tmp, true); // a mod without subfolder was moved as a whole
+            if (Directory.Exists(tmp)) Fs.DeleteDir(tmp); // a mod without subfolder was moved as a whole
             state[a.Id] = plan.Expected ?? "sha256:" + hash;
             SaveState(state);
             updated++;
@@ -313,7 +313,7 @@ public sealed class Installer(Manifest manifest, InstallSettings s, Downloader d
     {
         Directory.CreateDirectory(Path.GetDirectoryName(dest)!);
         if (Path.GetPathRoot(src) == Path.GetPathRoot(dest)) Directory.Move(src, dest);
-        else { CopyDir(src, dest); Directory.Delete(src, true); }
+        else { CopyDir(src, dest); Fs.DeleteDir(src); }
     }
 
     static void CopyDir(string src, string dest)
@@ -322,7 +322,7 @@ public sealed class Installer(Manifest manifest, InstallSettings s, Downloader d
             Directory.CreateDirectory(Path.Combine(dest, Path.GetRelativePath(src, d)));
         Directory.CreateDirectory(dest);
         foreach (var f in Directory.EnumerateFiles(src, "*", SearchOption.AllDirectories))
-            File.Copy(f, Path.Combine(dest, Path.GetRelativePath(src, f)), true);
+            Fs.CopyFile(f, Path.Combine(dest, Path.GetRelativePath(src, f)));
     }
 
     /// <summary>
@@ -368,7 +368,7 @@ public sealed class Installer(Manifest manifest, InstallSettings s, Downloader d
                 if (!File.Exists(b)) File.Copy(target, b);
             }
             Directory.CreateDirectory(Path.GetDirectoryName(target)!);
-            File.Copy(f, target, true);
+            Fs.CopyFile(f, target);
         }
         Log?.Invoke($"Arquivos substituídos têm backup em {backup}");
     }

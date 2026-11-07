@@ -75,7 +75,7 @@ public sealed class BaseSetup(BaseGame game, InstallSettings s, Downloader downl
         IProgress<StepProgress> progress, CancellationToken ct)
     {
         var tmp = Path.Combine(s.DownloadsDir, ".extract", Path.GetFileNameWithoutExtension(archive));
-        if (Directory.Exists(tmp)) Directory.Delete(tmp, true);
+        if (Directory.Exists(tmp)) Fs.DeleteDir(tmp);
         await extractor.ExtractAsync(archive, tmp,
             new Progress<int>(p => progress.Report(new($"Extraindo {title}", $"{p}%", from + (to - from) * p / 100.0, p / 100.0))), ct);
 
@@ -88,7 +88,7 @@ public sealed class BaseSetup(BaseGame game, InstallSettings s, Downloader downl
             Directory.CreateDirectory(Path.GetDirectoryName(target)!);
             File.Move(f, target, true);
         }
-        Directory.Delete(tmp, true);
+        Fs.DeleteDir(tmp);
     }
 
     /// <summary>Portable instance, game path, executables, REIMA profile. Existing ini is left untouched.</summary>
