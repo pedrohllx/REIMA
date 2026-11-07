@@ -260,7 +260,7 @@ public sealed class Installer(Manifest manifest, InstallSettings s, Downloader d
                     OverlayWithBackup(root, Path.Combine(s.Mo2Root, a.Target ?? ""), Path.Combine(backupDir, "MO2", a.Target ?? ""));
                     break;
             }
-            Directory.Delete(tmp, true);
+            if (Directory.Exists(tmp)) Directory.Delete(tmp, true); // a mod without subfolder was moved as a whole
             state[a.Id] = plan.Expected ?? "sha256:" + hash;
             SaveState(state);
             updated++;
